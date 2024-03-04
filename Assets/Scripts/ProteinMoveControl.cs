@@ -6,6 +6,8 @@ using UnityEngine.EventSystems;
 
 public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler
 {
+    [SerializeField] float initYPosition;
+
     // Objects
     private Image objImage;
     private RectTransform objRectTranform;
@@ -14,13 +16,19 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
     float rotateDirection;
     bool isRotating;
 
+    // Translation variables
+    float translateDirection;
+    bool isMoving;
+
     // OnClick variables
     private bool isSelected;
     private bool wasDragged;
 
     // OnDrag variables
+    private Vector2 movementStep;
     private Vector3 mouseInitPosition;
     private Vector3 objInitPosition;
+
 
 
     // Start is called before the first frame update
@@ -28,9 +36,16 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         objImage = GetComponent<Image>();
         objRectTranform = GetComponent<RectTransform>();
+
+        //movementStep = objRectTranform.rect.size * objRectTranform.localScale;
+        movementStep = objRectTranform.rect.size * 0.25f;
+
         isSelected = false;
         wasDragged = false;
         isRotating = false;
+
+        // Check if initYPosition is correct. If not, move object there
+
     }
 
     void Update()
@@ -48,7 +63,23 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         else
         {
             isRotating = false;
-        }        
+        }
+
+        translateDirection = Input.GetAxisRaw("Vertical");
+
+        if (Mathf.Abs(translateDirection) > Mathf.Epsilon)
+        {
+            if (isSelected && !isMoving)
+            {
+                isMoving = true;
+                translateObject();
+            }
+        }
+        else
+        {
+            isMoving = false;
+        }
+
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -83,8 +114,9 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
     {
         if (isSelected)
         {
+            // Movement
             Vector3 mouseCanvasRelative = Input.mousePosition - mouseInitPosition;
-            objRectTranform.localPosition = objInitPosition + mouseCanvasRelative;         
+            objRectTranform.localPosition = objInitPosition + mouseCanvasRelative;
         }        
     }
 
@@ -106,6 +138,24 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         else
         {
             objRectTranform.Rotate(new Vector3(0.0f, 0.0f, 90.0f));
+        }
+    }
+
+    public void translateObject()
+    {
+        if (translateDirection > 0.0f)
+        {
+            if(objRectTranform.localPosition.y < movementStep.y)
+            {
+                objRectTranform.localPosition = new Vector3(objRectTranform.localPosition.x, objRectTranform.localPosition.y + movementStep.y, objRectTranform.localPosition.z);
+            }
+        }
+        else
+        {
+            if (objRectTranform.localPosition.y > -movementStep.y)
+            {
+                objRectTranform.localPosition = new Vector3(objRectTranform.localPosition.x, objRectTranform.localPosition.y - movementStep.y, objRectTranform.localPosition.z);
+            }
         }
     }
 
