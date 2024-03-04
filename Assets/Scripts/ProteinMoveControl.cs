@@ -11,6 +11,7 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
     // Objects
     private Image objImage;
     private RectTransform objRectTranform;
+    [HideInInspector] public Transform parentAfterDrag;
 
     // Rotate variables
     float rotateDirection;
@@ -105,8 +106,22 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         {
             objImage.color = new Color32(170, 170, 255, 170);
             mouseInitPosition = Input.mousePosition;
-            objInitPosition = objRectTranform.localPosition;
             wasDragged = true;
+
+            Debug.Log("objInitPosition " + objInitPosition);
+
+            // DRAG AND DROP
+            // We get the parent so we can return to the slot if we drop somewhere invalid
+            parentAfterDrag = transform.parent;
+            // We assign the canvas as new parent so we can draw the dragged item infront of everyone in the canvas. We also need to set it as
+            // the last sibling to be drawn for this
+            transform.SetParent(transform.root);
+            transform.SetAsLastSibling();
+            // Lastly we deactivate Raycast so the Item doesn't drop into itself
+            objImage.raycastTarget = false;
+
+            // Init here so we get the position with the canvas as parent
+            objInitPosition = objRectTranform.localPosition;
         }            
     }
 
@@ -117,6 +132,9 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             // Movement
             Vector3 mouseCanvasRelative = Input.mousePosition - mouseInitPosition;
             objRectTranform.localPosition = objInitPosition + mouseCanvasRelative;
+
+            Debug.Log("mouserelative " + mouseCanvasRelative);
+            
         }        
     }
 
@@ -126,6 +144,13 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         {
             objImage.color = new Color32(255, 255, 255, 170);
             wasDragged = false;
+
+
+            // DRAG AND DROP
+            // We return parenthood to original (or new) parent
+            transform.SetParent(parentAfterDrag);
+            // reactivate Raycast so the mouse can interact with it
+            objImage.raycastTarget = true;
         }        
     }
 
