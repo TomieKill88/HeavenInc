@@ -11,25 +11,27 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
     // Objects
     private Image objImage;
     private RectTransform objRectTranform;
-    [HideInInspector] public Transform parentAfterDrag;
+    private Transform parentAfterDrag;
 
     // Rotate variables
     float rotateDirection;
     bool isRotating;
-
-    // Translation variables
-    float translateDirection;
-    bool isMoving;
 
     // OnClick variables
     private bool isSelected;
     private bool wasDragged;
 
     // OnDrag variables
-    private Vector2 movementStep;
     private Vector3 mouseInitPosition;
     private Vector3 objInitPosition;
 
+
+    // Properties
+    public Transform ParentAfterDrag
+    {
+        get { return parentAfterDrag; }
+        set { parentAfterDrag = value; }
+    }
 
 
     // Start is called before the first frame update
@@ -38,15 +40,9 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         objImage = GetComponent<Image>();
         objRectTranform = GetComponent<RectTransform>();
 
-        //movementStep = objRectTranform.rect.size * objRectTranform.localScale;
-        movementStep = objRectTranform.rect.size * 0.25f;
-
         isSelected = false;
         wasDragged = false;
         isRotating = false;
-
-        // Check if initYPosition is correct. If not, move object there
-
     }
 
     void Update()
@@ -66,21 +62,6 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             isRotating = false;
         }
 
-        translateDirection = Input.GetAxisRaw("Vertical");
-
-        if (Mathf.Abs(translateDirection) > Mathf.Epsilon)
-        {
-            if (isSelected && !isMoving)
-            {
-                isMoving = true;
-                translateObject();
-            }
-        }
-        else
-        {
-            isMoving = false;
-        }
-
     }
 
     public void OnPointerClick(PointerEventData eventData)
@@ -89,12 +70,16 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         {
             isSelected = !isSelected;
 
+            Debug.Log("objInitPosition " + objRectTranform.localPosition);
+
             if (isSelected)
             {
+                Debug.Log(initYPosition + " Was selected");
                 objImage.color = new Color32(255, 255, 255, 170);
             }
             else
             {
+                Debug.Log(initYPosition + " Was deselected");
                 objImage.color = new Color32(255, 255, 255, 255);
             }
         }        
@@ -108,7 +93,6 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             mouseInitPosition = Input.mousePosition;
             wasDragged = true;
 
-            Debug.Log("objInitPosition " + objInitPosition);
 
             // DRAG AND DROP
             // We get the parent so we can return to the slot if we drop somewhere invalid
@@ -122,6 +106,8 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
 
             // Init here so we get the position with the canvas as parent
             objInitPosition = objRectTranform.localPosition;
+            Debug.Log(initYPosition + " Begings drag");
+            Debug.Log("objInitPosition " + objInitPosition);
         }            
     }
 
@@ -133,9 +119,13 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             Vector3 mouseCanvasRelative = Input.mousePosition - mouseInitPosition;
             objRectTranform.localPosition = objInitPosition + mouseCanvasRelative;
 
-            Debug.Log("mouserelative " + mouseCanvasRelative);
-            
-        }        
+            Debug.Log("mouserelative " + mouseCanvasRelative);            
+        }
+        else
+        {
+            // This stops OnDrop(PointerEventData eventData) from being called.
+            eventData.pointerDrag = null;
+        }
     }
 
     public void OnEndDrag(PointerEventData eventData)
@@ -151,6 +141,9 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             transform.SetParent(parentAfterDrag);
             // reactivate Raycast so the mouse can interact with it
             objImage.raycastTarget = true;
+
+            Debug.Log(initYPosition + " Ends drag");
+            Debug.Log("objInitPosition " + objInitPosition);
         }        
     }
 
@@ -165,24 +158,5 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             objRectTranform.Rotate(new Vector3(0.0f, 0.0f, 90.0f));
         }
     }
-
-    public void translateObject()
-    {
-        if (translateDirection > 0.0f)
-        {
-            if(objRectTranform.localPosition.y < movementStep.y)
-            {
-                objRectTranform.localPosition = new Vector3(objRectTranform.localPosition.x, objRectTranform.localPosition.y + movementStep.y, objRectTranform.localPosition.z);
-            }
-        }
-        else
-        {
-            if (objRectTranform.localPosition.y > -movementStep.y)
-            {
-                objRectTranform.localPosition = new Vector3(objRectTranform.localPosition.x, objRectTranform.localPosition.y - movementStep.y, objRectTranform.localPosition.z);
-            }
-        }
-    }
-
 
 }
