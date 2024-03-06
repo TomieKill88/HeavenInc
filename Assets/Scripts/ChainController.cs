@@ -6,8 +6,8 @@ using UnityEngine.UI;
 public class ChainController : MonoBehaviour
 {
     //************ SERIALIZED VARIABLES ********//
-    [SerializeField] BondInfo[] InitProteinInfo;
-    [SerializeField] BondInfo[] FinalProteinInfo;
+    [SerializeField] BaseProteinChain InitProteinInfo;
+    [SerializeField] BaseProteinChain FinalProteinInfo;
     [SerializeField] Sprite EmptySprite;
 
     //************ UNITY OBJECTS ***************//
@@ -25,6 +25,8 @@ public class ChainController : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
+        Debug.Log("");
+
         aberrations = 0;
 
         InitializeChain();
@@ -37,7 +39,7 @@ public class ChainController : MonoBehaviour
 
         bool aminoAcidChecked = false;
 
-        foreach (BondInfo finalBond in FinalProteinInfo)
+        foreach (BondInfo finalBond in FinalProteinInfo.ProteinChain)
         {
             foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
             {
@@ -67,7 +69,7 @@ public class ChainController : MonoBehaviour
     {
         bool aminoAcidSet = false;
 
-        foreach (BondInfo initBond in InitProteinInfo)
+        foreach (BondInfo initBond in InitProteinInfo.ProteinChain)
         {
             foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
             {
@@ -101,21 +103,5 @@ public class ChainController : MonoBehaviour
             chainBond.AminoAcidController.AminoAcidSprite = EmptySprite;
             chainBond.AminoAcidController.UpdateSprite();
         }
-    }
-}
-
-[System.Serializable]
-public struct BondInfo
-{
-    public int BondID;
-    public int AminoAcidID;
-    public float AminoAcidOrientation;
-    public Sprite AminoAcidSprite;
-
-    public void Empty()
-    {
-        BondID = 0;
-        AminoAcidID = 0;
-        AminoAcidOrientation = 0.0f;
     }
 }

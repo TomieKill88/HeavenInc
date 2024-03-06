@@ -1,0 +1,35 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: b67106683efd589498646537c6270aef, type: 3}
+  m_Name: FinalChain1
+  m_EditorClassIdentifier: 
+  proteinChain:
+  - BondID: 0
+    AminoAcidID: 1
+    AminoAcidOrientation: 0
+    AminoAcidSprite: {fileID: -1954081764, guid: 4bc9568193863d94aad11bfecdb2943d, type: 3}
+  - BondID: 6
+    AminoAcidID: 2
+    AminoAcidOrientation: 0
+    AminoAcidSprite: {fileID: 1653930694, guid: 4bc9568193863d94aad11bfecdb2943d, type: 3}
+  - BondID: 12
+    AminoAcidID: 3
+    AminoAcidOrientation: 0
+    AminoAcidSprite: {fileID: -1051166298, guid: 4bc9568193863d94aad11bfecdb2943d, type: 3}
+  - BondID: 13
+    AminoAcidID: 4
+    AminoAcidOrientation: 0
+    AminoAcidSprite: {fileID: -939693996, guid: 4bc9568193863d94aad11bfecdb2943d, type: 3}
+  - BondID: 9
+    AminoAcidID: 5
+    AminoAcidOrientation: 0
+    AminoAcidSprite: {fileID: 1832443357, guid: 4bc9568193863d94aad11bfecdb2943d, type: 3}

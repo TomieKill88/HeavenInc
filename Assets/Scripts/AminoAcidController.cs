@@ -7,7 +7,7 @@ using UnityEngine.EventSystems;
 public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler
 {
     //*************** SERIALIZED VARIABLES *******************//
-    [SerializeField] int aminoAcidID;
+    [SerializeField] AminoAcidID aminoAcidID;
     [SerializeField] Sprite aminoAcidSprite;
 
     //*************** UNITY OBJECTS *******************//
@@ -36,7 +36,7 @@ public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandle
         set { parentAfterDrag = value; }
     }
 
-    public int AminoAcidID
+    public AminoAcidID AminoAcidID
     {
         get { return aminoAcidID; }
         set { aminoAcidID = value; }

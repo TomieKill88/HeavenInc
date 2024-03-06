@@ -90,4 +90,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   aminoAcidID: 0
-  aminoAcidSprite: {fileID: 0}
+  aminoAcidSprite: {fileID: 21300000, guid: b5b6ad2e8e2d68b4abf7a496e3a4efed, type: 3}

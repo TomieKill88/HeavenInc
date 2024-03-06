@@ -993,6 +993,14 @@ PrefabInstance:
       value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5735799553569733382, guid: e12713930661be0409e62ecc10199291, type: 3}
+      propertyPath: InitProteinInfo
+      value: 
+      objectReference: {fileID: 11400000, guid: 3be9bc951e00b28408f8123d49d4cb70, type: 2}
+    - target: {fileID: 5735799553569733382, guid: e12713930661be0409e62ecc10199291, type: 3}
+      propertyPath: FinalProteinInfo
+      value: 
+      objectReference: {fileID: 11400000, guid: f2376f9d937bc9e429a0595400639d38, type: 2}
+    - target: {fileID: 5735799553569733382, guid: e12713930661be0409e62ecc10199291, type: 3}
       propertyPath: InitProteinInfo.Array.size
       value: 5
       objectReference: {fileID: 0}
