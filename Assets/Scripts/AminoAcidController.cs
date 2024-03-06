@@ -4,16 +4,20 @@ using UnityEngine;
 using UnityEngine.UI;
 using UnityEngine.EventSystems;
 
-public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler
+public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandler, IEndDragHandler, IPointerClickHandler
 {
-    [SerializeField] float initYPosition;
+    //*************** SERIALIZED VARIABLES *******************//
+    [SerializeField] int aminoAcidID;
+    [SerializeField] Sprite aminoAcidSprite;
 
-    // Objects
+    //*************** UNITY OBJECTS *******************//
     private Image objImage;
     private RectTransform objRectTranform;
     private Transform parentAfterDrag;
 
+    //*************** VARIABLES *******************//
     // Rotate variables
+    float aminoAcidOrientation;
     float rotateDirection;
     bool isRotating;
 
@@ -25,20 +29,38 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
     private Vector3 mouseInitPosition;
     private Vector3 objInitPosition;
 
-
-    // Properties
+    //*************** PROPERTIES *******************//
     public Transform ParentAfterDrag
     {
         get { return parentAfterDrag; }
         set { parentAfterDrag = value; }
     }
 
+    public int AminoAcidID
+    {
+        get { return aminoAcidID; }
+        set { aminoAcidID = value; }
+    }
 
-    // Start is called before the first frame update
-    void Start()
+    public Sprite AminoAcidSprite
+    {
+        get { return aminoAcidSprite; }
+        set { aminoAcidSprite = value; }
+    }
+
+    public float AminoAcidOrientation
+    {
+        get { return aminoAcidOrientation; }
+        set { aminoAcidOrientation = value; }
+    }
+    
+    //*************** UNITY INTERFACES *******************//
+    void Awake()
     {
         objImage = GetComponent<Image>();
         objRectTranform = GetComponent<RectTransform>();
+
+        aminoAcidOrientation = objRectTranform.localRotation.eulerAngles.z;
 
         isSelected = false;
         wasDragged = false;
@@ -70,16 +92,12 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         {
             isSelected = !isSelected;
 
-            Debug.Log("objInitPosition " + objRectTranform.localPosition);
-
             if (isSelected)
             {
-                Debug.Log(initYPosition + " Was selected");
                 objImage.color = new Color32(255, 255, 255, 170);
             }
             else
             {
-                Debug.Log(initYPosition + " Was deselected");
                 objImage.color = new Color32(255, 255, 255, 255);
             }
         }        
@@ -106,8 +124,6 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
 
             // Init here so we get the position with the canvas as parent
             objInitPosition = objRectTranform.localPosition;
-            Debug.Log(initYPosition + " Begings drag");
-            Debug.Log("objInitPosition " + objInitPosition);
         }            
     }
 
@@ -117,9 +133,7 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         {
             // Movement
             Vector3 mouseCanvasRelative = Input.mousePosition - mouseInitPosition;
-            objRectTranform.localPosition = objInitPosition + mouseCanvasRelative;
-
-            Debug.Log("mouserelative " + mouseCanvasRelative);            
+            objRectTranform.localPosition = objInitPosition + mouseCanvasRelative;           
         }
         else
         {
@@ -141,12 +155,11 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
             transform.SetParent(parentAfterDrag);
             // reactivate Raycast so the mouse can interact with it
             objImage.raycastTarget = true;
-
-            Debug.Log(initYPosition + " Ends drag");
-            Debug.Log("objInitPosition " + objInitPosition);
         }        
     }
 
+
+    //*************** MEMBER METHODS *******************//
     public void rotateObject()
     {
         if (rotateDirection > 0.0f)
@@ -157,6 +170,13 @@ public class ProteinMoveControl : MonoBehaviour, IDragHandler, IBeginDragHandler
         {
             objRectTranform.Rotate(new Vector3(0.0f, 0.0f, 90.0f));
         }
+
+        aminoAcidOrientation = objRectTranform.localRotation.eulerAngles.z;
     }
 
+    public void UpdateSprite()
+    {
+        objImage.sprite = aminoAcidSprite;
+        objRectTranform.Rotate(new Vector3(0.0f, 0.0f, aminoAcidOrientation - objRectTranform.localRotation.eulerAngles.z));
+    }
 }
