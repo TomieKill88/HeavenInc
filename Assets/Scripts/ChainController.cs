@@ -5,14 +5,16 @@ using UnityEngine.UI;
 
 public class ChainController : MonoBehaviour
 {
+    const int MAX_INSTRURCTION_NUMBER = 4;
+
     //************ SERIALIZED VARIABLES ********//
-    [SerializeField] BaseProteinChain InitProteinInfo;
-    [SerializeField] BaseProteinChain FinalProteinInfo;
+
     [SerializeField] Sprite EmptySprite;
 
     //************ UNITY OBJECTS ***************//
     //************ VARIABLES *******************//
     private int aberrations;
+    Instruction[] instructions;
 
     //************ PROPERTIES ******************//
     public int Aberrations
@@ -21,19 +23,43 @@ public class ChainController : MonoBehaviour
         set { aberrations = value; }
     }
 
+    public Instruction[] Instructions
+    {
+        get { return instructions; }
+        set { instructions = value; }
+    }
+
+    public BaseProteinChain InitProteinInfo { get; set; }
+    public BaseProteinChain FinalProteinInfo { get; set; }
+
     //************ UNITY INTERFACES ************//
     // Start is called before the first frame update
-    void Start()
+    void Awake()
     {
-        Debug.Log("");
-
         aberrations = 0;
 
-        InitializeChain();
+        // At the moment we will have only 4 instructions MAX
+        instructions = new Instruction[MAX_INSTRURCTION_NUMBER]{
+            new Instruction() , new Instruction(),
+            new Instruction() , new Instruction()};
     }
 
     //************ MEMBER METHODS **************//
     public int CalculateAberrations()
+    {
+        aberrations = 0;
+
+        // Get bonds
+        foreach (Instruction instruction in instructions)
+        {
+            if (!instruction.Apply())
+                aberrations++;
+        }
+
+        return aberrations;
+    }
+
+    public int CalculateAberrationsFixed()
     {
         aberrations = 0;
 
@@ -65,9 +91,15 @@ public class ChainController : MonoBehaviour
         return aberrations;
     }
 
-    private void InitializeChain()
+    public void InitializeChain()
     {
         bool aminoAcidSet = false;
+
+        foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
+        {
+            // Set Event calls for each bond
+            chainBond.AminoAcidDropped += ChainBondAminoAcidDropped;
+        }
 
         foreach (BondInfo initBond in InitProteinInfo.ProteinChain)
         {
@@ -75,9 +107,10 @@ public class ChainController : MonoBehaviour
             {
                 aminoAcidSet = false;
 
-                if(initBond.BondID == chainBond.ChainBondID)
+                if (initBond.BondID == chainBond.ChainBondID)
                 {
                     chainBond.AminoAcidController.AminoAcidID = initBond.AminoAcidID;
+                    chainBond.AminoAcidController.CurrentBondID = initBond.BondID;
                     chainBond.AminoAcidController.AminoAcidOrientation = initBond.AminoAcidOrientation;
                     chainBond.AminoAcidController.AminoAcidSprite = initBond.AminoAcidSprite;
                     chainBond.AminoAcidController.UpdateSprite();
@@ -104,4 +137,25 @@ public class ChainController : MonoBehaviour
             chainBond.AminoAcidController.UpdateSprite();
         }
     }
+
+    public void AddInstructionByIndex(int index, Instruction instruction)
+    {
+        if (!(index + 1 >= MAX_INSTRURCTION_NUMBER))
+        {
+            instructions[index] = instruction;
+        }
+    }
+
+    public void ChainBondAminoAcidDropped(AminoAcidID aminoAcidID, int bondID)
+    {        
+        // Update bonds
+        foreach (Instruction instruction in instructions)
+        {
+            Debug.Log(instruction.Description);
+
+            instruction?.EditMainPair(aminoAcidID, bondID);
+            instruction?.EditAssociatedPair(aminoAcidID, bondID);
+        }        
+    }
+
 }

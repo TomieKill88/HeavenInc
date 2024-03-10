@@ -3,8 +3,12 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
+public delegate void Notify(AminoAcidID aminoAcidID, int bondID);
+
 public class ChainBondController : MonoBehaviour, IDropHandler
 {
+    public event Notify AminoAcidDropped;
+
     //************ SERIALIZED VARIABLES ********//
     [SerializeField] int chainBondID;
 
@@ -12,11 +16,24 @@ public class ChainBondController : MonoBehaviour, IDropHandler
     AminoAcidController aminoAcidController;
 
     //************ VARIABLES *******************//
+    private int chainBondColumn;
+    private int chainBondRow;
     //************ PROPERTIES ******************//
+
     public int ChainBondID
     {
         get { return chainBondID; }
         set { chainBondID = value; }
+    }
+
+    public int ChainBondColumn
+    {
+        get { return chainBondColumn; }
+    }
+
+    public int ChainBondRow
+    {
+        get { return chainBondRow; }
     }
 
     public AminoAcidController AminoAcidController
@@ -29,28 +46,49 @@ public class ChainBondController : MonoBehaviour, IDropHandler
     void Awake()
     {
         aminoAcidController = transform.GetComponentsInChildren<AminoAcidController>(false)[0];
+
+        chainBondRow = (int)(chainBondID / 5);
+        chainBondColumn = (int)(chainBondID % 5);
     }
 
     public void OnDrop(PointerEventData eventData)
     {
+        Dictionary<AminoAcidID, int> tmpAABondPairs = new Dictionary<AminoAcidID, int>();
         GameObject droppedObject = eventData.pointerDrag;
-        aminoAcidController = droppedObject.GetComponent<AminoAcidController>();
 
         // First check that slot has no children already
         if (transform.childCount == 0)
         {
+            // Update aminoacid
+            aminoAcidController = droppedObject.GetComponent<AminoAcidController>();
+
             // We assign this slot as the new parent of the protein
             aminoAcidController.ParentAfterDrag = transform;
         }
         else if(transform.childCount == 1)
         {
-            // We assign the child of the slot the slot of the protein being dropped 
+            // Inform the Chain controller that an AminoAcid has changed bonds
+            // Current AA now goes to the bond of dropped AA
+            OnAminoAcidDropped(aminoAcidController.AminoAcidID, droppedObject.GetComponent<AminoAcidController>().CurrentBondID);
+            // Dropped AA now has this bond
+            OnAminoAcidDropped(droppedObject.GetComponent<AminoAcidController>().AminoAcidID, chainBondID);
+            // Update aminoacid
+            aminoAcidController = droppedObject.GetComponent<AminoAcidController>();
+
+            // We take the current child AminoAcid in the Bond and Change the Bond for the one of the AminoAcid being dropped 
             Transform slotChildTransform = transform.GetChild(0);
             slotChildTransform.parent = aminoAcidController.ParentAfterDrag;
+
             // We assign this slot as the new parent of the protein
             aminoAcidController.ParentAfterDrag = transform;
+
         }
     }
 
-    //************ MEMBER METHODS **************//
+    //************ MEMBER METHODS **************//   
+
+    protected virtual void OnAminoAcidDropped(AminoAcidID aminoAcidID, int bondID)
+    {
+        AminoAcidDropped?.Invoke(aminoAcidID, bondID);
+    }
 }

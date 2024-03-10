@@ -30,6 +30,8 @@ public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandle
     private Vector3 objInitPosition;
 
     //*************** PROPERTIES *******************//
+    public int CurrentBondID { get; set; }
+
     public Transform ParentAfterDrag
     {
         get { return parentAfterDrag; }
