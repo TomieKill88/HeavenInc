@@ -9,8 +9,11 @@ public class MainLoop : MonoBehaviour
     const int MAX_INSTRURCTION_NUMBER = 4;
 
     //************ SERIALIZED VARIABLES ********//
-    [SerializeField] ChainController chainController;
+    [SerializeField] DialogueCanvas dialogueCanvas;
+    [SerializeField] GameCanvas gameCanvas;
+    [SerializeField] Sprite emptySprite;
 
+    [SerializeField] ChainController chainController;
     [SerializeField] BaseProteinChain InitProteinInfo;
     [SerializeField] BaseProteinChain FinalProteinInfo;
 
@@ -30,22 +33,19 @@ public class MainLoop : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        /*List<ChainController> tmpChains = new List<ChainController>();
-        foreach (ChainController cc in FindAllObjectsOfType<ChainController>())
-        {
-            tmpChains.Add(cc);
-        }
+        // Init controls
+        dialogueCanvas.Init(emptySprite);
+        dialogueCanvas.CharacterDialogue("Metatron", "I see you but you dont see me!");
 
-        chains = tmpChains.ToArray();*/
+        //gameCanvas.Init();
 
         chainController.InitProteinInfo = InitProteinInfo;
         chainController.FinalProteinInfo = FinalProteinInfo;
-
         chainController.InitializeChain();
 
         aberrations = 0;
 
-
+        // Init instructions
         instructions = new Instruction[4]{
             new NextTo(AminoAcidID.Red, AminoAcidID.Blue),
             new NextTo(AminoAcidID.Yellow, AminoAcidID.Black),
@@ -66,27 +66,6 @@ public class MainLoop : MonoBehaviour
     }*/
 
     //************ MEMBER METHODS **************//
-    private IEnumerable<GameObject> GetAllRootGameObjects()
-    {
-        GameObject[] rootObjs = SceneManager.GetActiveScene().GetRootGameObjects();
-        
-        foreach(var obj in rootObjs)
-        {
-            yield return obj;
-        }
-    }
-
-    private IEnumerable<T> FindAllObjectsOfType<T>() where T : ChainController
-    {
-        foreach (GameObject rootObj in GetAllRootGameObjects())
-        {
-            foreach(T controller in rootObj.GetComponentsInChildren<T>(true))
-            {
-                yield return controller;
-            }
-        }
-    }
-
     private void UpdateInstructions()
     {
         // Init the AA bond location in each instruction        
@@ -105,5 +84,10 @@ public class MainLoop : MonoBehaviour
         aberrations = chainController.CalculateAberrations();
 
         Debug.Log("Aberrations " + aberrations);
+    }
+
+    public void CharacterDialogue(string characterName, string characterDialogue)
+    {
+        dialogueCanvas.CharacterDialogue(characterName, characterDialogue);
     }
 }

@@ -11,9 +11,9 @@ public class ChainBondController : MonoBehaviour, IDropHandler
 
     //************ SERIALIZED VARIABLES ********//
     [SerializeField] int chainBondID;
+    [SerializeField] AminoAcidController aminoAcidController;
 
     //************ UNITY OBJECTS ***************//
-    AminoAcidController aminoAcidController;
 
     //************ VARIABLES *******************//
     private int chainBondColumn;
@@ -45,7 +45,7 @@ public class ChainBondController : MonoBehaviour, IDropHandler
     //************ UNITY INTERFACES ************// 
     void Awake()
     {
-        aminoAcidController = transform.GetComponentsInChildren<AminoAcidController>(false)[0];
+        //aminoAcidController = transform.GetComponentsInChildren<AminoAcidController>(false)[0];
 
         chainBondRow = (int)(chainBondID / 5);
         chainBondColumn = (int)(chainBondID % 5);
@@ -53,7 +53,6 @@ public class ChainBondController : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        Dictionary<AminoAcidID, int> tmpAABondPairs = new Dictionary<AminoAcidID, int>();
         GameObject droppedObject = eventData.pointerDrag;
 
         // First check that slot has no children already

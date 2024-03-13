@@ -8,8 +8,8 @@ public class ChainController : MonoBehaviour
     const int MAX_INSTRURCTION_NUMBER = 4;
 
     //************ SERIALIZED VARIABLES ********//
-
     [SerializeField] Sprite EmptySprite;
+    [SerializeField] ChainBondController[] ChainBondControllers;
 
     //************ UNITY OBJECTS ***************//
     //************ VARIABLES *******************//
@@ -65,9 +65,10 @@ public class ChainController : MonoBehaviour
 
         bool aminoAcidChecked = false;
 
+        // transform.GetComponentsInChildren<ChainBondController>()
         foreach (BondInfo finalBond in FinalProteinInfo.ProteinChain)
         {
-            foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
+            foreach (ChainBondController chainBond in ChainBondControllers)
             {
                 aminoAcidChecked = false;
 
@@ -95,7 +96,7 @@ public class ChainController : MonoBehaviour
     {
         bool aminoAcidSet = false;
 
-        foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
+        foreach (ChainBondController chainBond in ChainBondControllers)
         {
             // Set Event calls for each bond
             chainBond.AminoAcidDropped += ChainBondAminoAcidDropped;
@@ -103,7 +104,7 @@ public class ChainController : MonoBehaviour
 
         foreach (BondInfo initBond in InitProteinInfo.ProteinChain)
         {
-            foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
+            foreach (ChainBondController chainBond in ChainBondControllers)
             {
                 aminoAcidSet = false;
 
@@ -129,7 +130,7 @@ public class ChainController : MonoBehaviour
     {
         aberrations = 0;
 
-        foreach (ChainBondController chainBond in transform.GetComponentsInChildren<ChainBondController>())
+        foreach (ChainBondController chainBond in ChainBondControllers)
         {
             chainBond.AminoAcidController.AminoAcidID = 0;
             chainBond.AminoAcidController.AminoAcidOrientation = 0.0f;
