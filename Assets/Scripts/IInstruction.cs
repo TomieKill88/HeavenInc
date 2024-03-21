@@ -33,7 +33,7 @@ public class Instruction
     //************ MEMBER METHODS **************//
     public Instruction()
     {
-        description = "Empty instruction. Always False";
+        description = "Empty instruction. Always True";
 
         mainAminoAcids = new Dictionary<AminoAcidID, int>();
         associatedAminoAcids = new Dictionary<AminoAcidID, int>();
@@ -44,7 +44,7 @@ public class Instruction
 
     public Instruction(AminoAcidID pMainAminoAcid, AminoAcidID pAssociatedAminoAcids)
     {
-        description = "Empty instruction. Always False";
+        description = "Empty instruction. Always True";
 
         mainAminoAcids = new Dictionary<AminoAcidID, int>();
         associatedAminoAcids = new Dictionary<AminoAcidID, int>();

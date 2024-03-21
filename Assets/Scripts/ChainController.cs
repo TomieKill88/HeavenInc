@@ -5,7 +5,7 @@ using UnityEngine.UI;
 
 public class ChainController : MonoBehaviour
 {
-    const int MAX_INSTRURCTION_NUMBER = 4;
+    const int MAX_INSTRUCTION_NUMBER = 4;
 
     //************ SERIALIZED VARIABLES ********//
     [SerializeField] Sprite EmptySprite;
@@ -39,7 +39,7 @@ public class ChainController : MonoBehaviour
         aberrations = 0;
 
         // At the moment we will have only 4 instructions MAX
-        instructions = new Instruction[MAX_INSTRURCTION_NUMBER]{
+        instructions = new Instruction[MAX_INSTRUCTION_NUMBER]{
             new Instruction() , new Instruction(),
             new Instruction() , new Instruction()};
     }
@@ -100,6 +100,8 @@ public class ChainController : MonoBehaviour
         {
             // Set Event calls for each bond
             chainBond.AminoAcidDropped += ChainBondAminoAcidDropped;
+            //Set the aminocid bonid
+            chainBond.AminoAcidController.CurrentBondID = chainBond.ChainBondID;
         }
 
         foreach (BondInfo initBond in InitProteinInfo.ProteinChain)
@@ -111,7 +113,6 @@ public class ChainController : MonoBehaviour
                 if (initBond.BondID == chainBond.ChainBondID)
                 {
                     chainBond.AminoAcidController.AminoAcidID = initBond.AminoAcidID;
-                    chainBond.AminoAcidController.CurrentBondID = initBond.BondID;
                     chainBond.AminoAcidController.AminoAcidOrientation = initBond.AminoAcidOrientation;
                     chainBond.AminoAcidController.AminoAcidSprite = initBond.AminoAcidSprite;
                     chainBond.AminoAcidController.UpdateSprite();
@@ -141,22 +142,27 @@ public class ChainController : MonoBehaviour
 
     public void AddInstructionByIndex(int index, Instruction instruction)
     {
-        if (!(index + 1 >= MAX_INSTRURCTION_NUMBER))
+        if (!(index + 1 >= MAX_INSTRUCTION_NUMBER))
         {
             instructions[index] = instruction;
         }
     }
 
     public void ChainBondAminoAcidDropped(AminoAcidID aminoAcidID, int bondID)
-    {        
+    {
         // Update bonds
         foreach (Instruction instruction in instructions)
         {
-            Debug.Log(instruction.Description);
-
             instruction?.EditMainPair(aminoAcidID, bondID);
             instruction?.EditAssociatedPair(aminoAcidID, bondID);
         }        
     }
 
+    public void GetBondsInfo()
+    {
+        foreach(ChainBondController chainBond in ChainBondControllers)
+        {
+            Debug.Log(chainBond.AminoAcidController.AminoacidToString());
+        }
+    }
 }

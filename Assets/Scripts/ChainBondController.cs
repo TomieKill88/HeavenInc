@@ -53,7 +53,12 @@ public class ChainBondController : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
+        Debug.Log("-------------");
+        Debug.Log("Current AA is: " + aminoAcidController.AminoAcidID);
+
         GameObject droppedObject = eventData.pointerDrag;
+
+        Debug.Log("dropped AA is: " + droppedObject.GetComponent<AminoAcidController>().AminoAcidID);
 
         // First check that slot has no children already
         if (transform.childCount == 0)
@@ -76,12 +81,14 @@ public class ChainBondController : MonoBehaviour, IDropHandler
 
             // We take the current child AminoAcid in the Bond and Change the Bond for the one of the AminoAcid being dropped 
             Transform slotChildTransform = transform.GetChild(0);
-            slotChildTransform.parent = aminoAcidController.ParentAfterDrag;
+            slotChildTransform.SetParent(aminoAcidController.ParentAfterDrag, false);//.parent = aminoAcidController.ParentAfterDrag;
 
             // We assign this slot as the new parent of the protein
             aminoAcidController.ParentAfterDrag = transform;
 
         }
+
+        Debug.Log("This new AA is: " + aminoAcidController.AminoAcidID);
     }
 
     //************ MEMBER METHODS **************//   

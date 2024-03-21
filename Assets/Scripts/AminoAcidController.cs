@@ -181,4 +181,9 @@ public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandle
         objImage.sprite = aminoAcidSprite;
         objRectTranform.Rotate(new Vector3(0.0f, 0.0f, aminoAcidOrientation - objRectTranform.localRotation.eulerAngles.z));
     }
+
+    public string AminoacidToString()
+    {
+        return "AminoacidID: " + AminoAcidID + " in Bond #" + CurrentBondID;
+    }
 }

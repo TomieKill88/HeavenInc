@@ -9,16 +9,16 @@ public class NextTo : Instruction
     //************ VARIABLES *******************//
     //************ PROPERTIES ******************//
     //************ MEMBER METHODS **************//
-    public NextTo()
-    {
-        description = "Empty instruction. Always True";
+    //public NextTo()
+    //{
+    //    description = "Empty instruction. Always True";
 
-        mainAminoAcids = new Dictionary<AminoAcidID, int>();
-        associatedAminoAcids = new Dictionary<AminoAcidID, int>();
+    //    mainAminoAcids = new Dictionary<AminoAcidID, int>();
+    //    associatedAminoAcids = new Dictionary<AminoAcidID, int>();
 
-        mainAminoAcids[AminoAcidID.Empty] = 0;
-        associatedAminoAcids[AminoAcidID.Empty] = 0;
-    }
+    //    mainAminoAcids[AminoAcidID.Empty] = 0;
+    //    associatedAminoAcids[AminoAcidID.Empty] = 0;
+    //}
 
     public NextTo(AminoAcidID pMainAminoAcid, AminoAcidID pAssociatedAminoAcids) : 
         base(pMainAminoAcid, pAssociatedAminoAcids)
@@ -29,7 +29,6 @@ public class NextTo : Instruction
     //************ OVERIDED MEMBER METHODS **************//
     public override bool Apply()
     {
-        Debug.Log("APPLY");
         foreach (KeyValuePair<AminoAcidID, int> mBond in MainAminoAcids)
         {
             Debug.Log(mBond.Key.ToString() + " in " + GetBondColumn(mBond.Value) + ", " + GetBondRow(mBond.Value));

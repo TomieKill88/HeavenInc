@@ -81,9 +81,11 @@ public class MainLoop : MonoBehaviour
 
     public void GetAberrations()
     {
-        aberrations = chainController.CalculateAberrations();
+        Debug.Log("---------------");
+        chainController.GetBondsInfo();
+        //aberrations = chainController.CalculateAberrations();
 
-        Debug.Log("Aberrations " + aberrations);
+        //Debug.Log("Aberrations " + aberrations);
     }
 
     public void CharacterDialogue(string characterName, string characterDialogue)
