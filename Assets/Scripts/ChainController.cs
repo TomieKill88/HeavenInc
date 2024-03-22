@@ -115,7 +115,7 @@ public class ChainController : MonoBehaviour
                     chainBond.AminoAcidController.AminoAcidID = initBond.AminoAcidID;
                     chainBond.AminoAcidController.AminoAcidOrientation = initBond.AminoAcidOrientation;
                     chainBond.AminoAcidController.AminoAcidSprite = initBond.AminoAcidSprite;
-                    chainBond.AminoAcidController.UpdateSprite();
+                    chainBond.AminoAcidController.UpdateSprite(true);
 
                     aminoAcidSet = true;
                     break;
@@ -136,7 +136,7 @@ public class ChainController : MonoBehaviour
             chainBond.AminoAcidController.AminoAcidID = 0;
             chainBond.AminoAcidController.AminoAcidOrientation = 0.0f;
             chainBond.AminoAcidController.AminoAcidSprite = EmptySprite;
-            chainBond.AminoAcidController.UpdateSprite();
+            chainBond.AminoAcidController.UpdateSprite(false);
         }
     }
 
@@ -148,13 +148,19 @@ public class ChainController : MonoBehaviour
         }
     }
 
-    public void ChainBondAminoAcidDropped(AminoAcidID aminoAcidID, int bondID)
+    public void ChainBondAminoAcidDropped(AminoAcidController aminoAcid, int newBondID)
     {
+        ChainBondControllers[newBondID].AminoAcidController.CurrentBondID = newBondID;
+        ChainBondControllers[newBondID].AminoAcidController.AminoAcidID = aminoAcid.AminoAcidID;
+        ChainBondControllers[newBondID].AminoAcidController.AminoAcidOrientation = aminoAcid.AminoAcidOrientation;
+        ChainBondControllers[newBondID].AminoAcidController.AminoAcidSprite = aminoAcid.AminoAcidSprite;
+        ChainBondControllers[newBondID].AminoAcidController.UpdateSprite(false);
+
         // Update bonds
         foreach (Instruction instruction in instructions)
         {
-            instruction?.EditMainPair(aminoAcidID, bondID);
-            instruction?.EditAssociatedPair(aminoAcidID, bondID);
+            instruction?.EditMainPair(aminoAcid.AminoAcidID, newBondID);
+            instruction?.EditAssociatedPair(aminoAcid.AminoAcidID, newBondID);
         }        
     }
 

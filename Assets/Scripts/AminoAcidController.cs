@@ -176,14 +176,34 @@ public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandle
         aminoAcidOrientation = objRectTranform.localRotation.eulerAngles.z;
     }
 
-    public void UpdateSprite()
+    public void UpdateSprite(bool rotate)
     {
         objImage.sprite = aminoAcidSprite;
-        objRectTranform.Rotate(new Vector3(0.0f, 0.0f, aminoAcidOrientation - objRectTranform.localRotation.eulerAngles.z));
+        if (rotate)
+        {
+            objRectTranform.Rotate(new Vector3(0.0f, 0.0f, aminoAcidOrientation - objRectTranform.localRotation.eulerAngles.z));
+        }            
+    }
+
+    public void UpdateAminoAcid(AminoAcidController newData)
+    {
+        this.AminoAcidID = newData.AminoAcidID;
+        this.CurrentBondID = newData.CurrentBondID;
+        this.AminoAcidOrientation = newData.AminoAcidOrientation;
+    }
+
+    public AminoAcidController DeepCopy()
+    {
+        AminoAcidController other = (AminoAcidController)this.MemberwiseClone();
+        other.AminoAcidID = aminoAcidID;
+        other.CurrentBondID = CurrentBondID;
+        other.AminoAcidOrientation = aminoAcidOrientation;
+        other.AminoAcidSprite = aminoAcidSprite;
+        return other;
     }
 
     public string AminoacidToString()
     {
-        return "AminoacidID: " + AminoAcidID + " in Bond #" + CurrentBondID;
+        return "AminoacidID: " + AminoAcidID + " in Bond #" + CurrentBondID + ". Rotation: " + aminoAcidOrientation + ". Sprite:" + aminoAcidSprite.name;
     }
 }

@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 
-public delegate void Notify(AminoAcidID aminoAcidID, int bondID);
+public delegate void Notify(AminoAcidController aminoAcid, int newBondID);
 
 public class ChainBondController : MonoBehaviour, IDropHandler
 {
@@ -53,12 +53,8 @@ public class ChainBondController : MonoBehaviour, IDropHandler
 
     public void OnDrop(PointerEventData eventData)
     {
-        Debug.Log("-------------");
-        Debug.Log("Current AA is: " + aminoAcidController.AminoAcidID);
-
         GameObject droppedObject = eventData.pointerDrag;
 
-        Debug.Log("dropped AA is: " + droppedObject.GetComponent<AminoAcidController>().AminoAcidID);
 
         // First check that slot has no children already
         if (transform.childCount == 0)
@@ -71,13 +67,13 @@ public class ChainBondController : MonoBehaviour, IDropHandler
         }
         else if(transform.childCount == 1)
         {
-            // Inform the Chain controller that an AminoAcid has changed bonds
-            // Current AA now goes to the bond of dropped AA
-            OnAminoAcidDropped(aminoAcidController.AminoAcidID, droppedObject.GetComponent<AminoAcidController>().CurrentBondID);
-            // Dropped AA now has this bond
-            OnAminoAcidDropped(droppedObject.GetComponent<AminoAcidController>().AminoAcidID, chainBondID);
+            // Make deep copy of aminoacids before anything happens
+            AminoAcidController tmpBondAminoacid = aminoAcidController.DeepCopy();
+            AminoAcidController tmpDroppedAminoacid = droppedObject.GetComponent<AminoAcidController>().DeepCopy();
+
+            // Drop functionality
             // Update aminoacid
-            aminoAcidController = droppedObject.GetComponent<AminoAcidController>();
+            /*aminoAcidController = droppedObject.GetComponent<AminoAcidController>();
 
             // We take the current child AminoAcid in the Bond and Change the Bond for the one of the AminoAcid being dropped 
             Transform slotChildTransform = transform.GetChild(0);
@@ -85,16 +81,20 @@ public class ChainBondController : MonoBehaviour, IDropHandler
 
             // We assign this slot as the new parent of the protein
             aminoAcidController.ParentAfterDrag = transform;
+            */
 
+            // Inform the Chain controller that an AminoAcid has changed bonds
+            // Current AA now goes to the bond of dropped AA
+            OnAminoAcidDropped(tmpBondAminoacid, tmpDroppedAminoacid.CurrentBondID);
+            // Dropped AA now has this bond
+            OnAminoAcidDropped(tmpDroppedAminoacid, tmpBondAminoacid.CurrentBondID);
         }
-
-        Debug.Log("This new AA is: " + aminoAcidController.AminoAcidID);
     }
 
     //************ MEMBER METHODS **************//   
 
-    protected virtual void OnAminoAcidDropped(AminoAcidID aminoAcidID, int bondID)
+    protected virtual void OnAminoAcidDropped(AminoAcidController aminoAcid, int newBondID)
     {
-        AminoAcidDropped?.Invoke(aminoAcidID, bondID);
+        AminoAcidDropped?.Invoke(aminoAcid, newBondID);
     }
 }
