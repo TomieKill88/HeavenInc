@@ -188,8 +188,10 @@ public class AminoAcidController : MonoBehaviour, IDragHandler, IBeginDragHandle
     public void UpdateAminoAcid(AminoAcidController newData)
     {
         this.AminoAcidID = newData.AminoAcidID;
-        this.CurrentBondID = newData.CurrentBondID;
-        this.AminoAcidOrientation = newData.AminoAcidOrientation;
+        this.AminoAcidSprite = newData.AminoAcidSprite;
+        UpdateSprite(false);
+        objRectTranform.Rotate(new Vector3(0.0f, 0.0f, newData.AminoAcidOrientation - objRectTranform.localRotation.eulerAngles.z));
+        this.AminoAcidOrientation = objRectTranform.localRotation.eulerAngles.z;
     }
 
     public AminoAcidController DeepCopy()

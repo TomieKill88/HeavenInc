@@ -151,10 +151,7 @@ public class ChainController : MonoBehaviour
     public void ChainBondAminoAcidDropped(AminoAcidController aminoAcid, int newBondID)
     {
         ChainBondControllers[newBondID].AminoAcidController.CurrentBondID = newBondID;
-        ChainBondControllers[newBondID].AminoAcidController.AminoAcidID = aminoAcid.AminoAcidID;
-        ChainBondControllers[newBondID].AminoAcidController.AminoAcidOrientation = aminoAcid.AminoAcidOrientation;
-        ChainBondControllers[newBondID].AminoAcidController.AminoAcidSprite = aminoAcid.AminoAcidSprite;
-        ChainBondControllers[newBondID].AminoAcidController.UpdateSprite(false);
+        ChainBondControllers[newBondID].AminoAcidController.UpdateAminoAcid(aminoAcid);
 
         // Update bonds
         foreach (Instruction instruction in instructions)
@@ -168,7 +165,8 @@ public class ChainController : MonoBehaviour
     {
         foreach(ChainBondController chainBond in ChainBondControllers)
         {
-            Debug.Log(chainBond.AminoAcidController.AminoacidToString());
+            if(chainBond.AminoAcidController.AminoAcidID != AminoAcidID.Empty)
+                Debug.Log(chainBond.AminoAcidController.AminoacidToString());
         }
     }
 }
